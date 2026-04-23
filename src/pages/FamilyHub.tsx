@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Users, FileText, CalendarClock, Pill, Activity, ArrowRight, ShieldHeart,
+  Users, FileText, CalendarClock, Pill, Activity, ArrowRight, HeartPulse,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -69,7 +69,7 @@ export default function FamilyHub() {
     >
       <div className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
-          <ShieldHeart className="h-6 w-6 text-primary" /> Family Health Hub
+          <HeartPulse className="h-6 w-6 text-primary" /> Family Health Hub
         </h1>
         <p className="text-sm text-muted-foreground">
           Welcome{user ? `, ${user.name}` : ""}. Everything for your family's health, in one calm space.
