@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { VitalsReading } from "@/types/vitals";
+import { useConnection } from "@/context/ConnectionContext";
 
 interface UseVitalsResult {
   latest: VitalsReading | null;
@@ -11,10 +12,12 @@ interface UseVitalsResult {
 const HISTORY_LIMIT = 60;
 
 /**
- * Polls /api/latest every `intervalMs` and keeps a rolling history.
+ * Polls the active endpoint (mock /api/latest or a user-configured device URL)
+ * every `intervalMs` and keeps a rolling history.
  * Sets connected=false if no successful response in the last 3s.
  */
 export function useVitals(intervalMs = 1000): UseVitalsResult {
+  const { endpoint } = useConnection();
   const [latest, setLatest] = useState<VitalsReading | null>(null);
   const [history, setHistory] = useState<VitalsReading[]>([]);
   const [connected, setConnected] = useState(false);
@@ -25,9 +28,13 @@ export function useVitals(intervalMs = 1000): UseVitalsResult {
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout>;
 
+    // Reset connection signal when switching endpoint
+    lastOkRef.current = 0;
+    setConnected(false);
+
     const poll = async () => {
       try {
-        const res = await fetch("/api/latest", { cache: "no-store" });
+        const res = await fetch(endpoint, { cache: "no-store" });
         if (!res.ok) throw new Error("bad status");
         const data = (await res.json()) as VitalsReading;
         if (cancelled) return;
@@ -55,7 +62,7 @@ export function useVitals(intervalMs = 1000): UseVitalsResult {
       clearTimeout(timer);
       clearInterval(conn);
     };
-  }, [intervalMs]);
+  }, [intervalMs, endpoint]);
 
   return { latest, history, connected, lastUpdated };
 }
