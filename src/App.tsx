@@ -14,6 +14,11 @@ import Emergency from "./pages/Emergency";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Settings from "./pages/Settings";
+import FamilyHub from "./pages/FamilyHub";
+import FamilyMembers from "./pages/FamilyMembers";
+import Documents from "./pages/Documents";
+import Appointments from "./pages/Appointments";
+import Medications from "./pages/Medications";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound.tsx";
 
@@ -61,6 +66,48 @@ function Shell() {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Family Health Hub — available to patients and admins */}
+        <Route
+          path="/family"
+          element={
+            <ProtectedRoute allow={["patient"]}>
+              <FamilyHub />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/family/members"
+          element={
+            <ProtectedRoute allow={["patient"]}>
+              <FamilyMembers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/family/documents"
+          element={
+            <ProtectedRoute allow={["patient"]}>
+              <Documents />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/family/appointments"
+          element={
+            <ProtectedRoute allow={["patient"]}>
+              <Appointments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/family/medications"
+          element={
+            <ProtectedRoute allow={["patient"]}>
+              <Medications />
             </ProtectedRoute>
           }
         />

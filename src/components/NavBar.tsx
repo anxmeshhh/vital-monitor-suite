@@ -21,8 +21,9 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: "/", label: "Patient View", roles: ["patient", "admin"] },
-  { to: "/doctor", label: "Doctor View", roles: ["doctor", "admin"] },
+  { to: "/", label: "Patient", roles: ["patient", "admin"] },
+  { to: "/family", label: "Family Hub", roles: ["patient", "admin"] },
+  { to: "/doctor", label: "Doctor", roles: ["doctor", "admin"] },
   { to: "/emergency", label: "Emergency", roles: ["patient", "doctor", "admin"] },
 ];
 
