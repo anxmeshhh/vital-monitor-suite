@@ -69,6 +69,48 @@ function Shell() {
             </ProtectedRoute>
           }
         />
+
+        {/* Family Health Hub — available to patients and admins */}
+        <Route
+          path="/family"
+          element={
+            <ProtectedRoute allow={["patient"]}>
+              <FamilyHub />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/family/members"
+          element={
+            <ProtectedRoute allow={["patient"]}>
+              <FamilyMembers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/family/documents"
+          element={
+            <ProtectedRoute allow={["patient"]}>
+              <Documents />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/family/appointments"
+          element={
+            <ProtectedRoute allow={["patient"]}>
+              <Appointments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/family/medications"
+          element={
+            <ProtectedRoute allow={["patient"]}>
+              <Medications />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
