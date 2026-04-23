@@ -33,12 +33,14 @@ export default function Medications() {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<Medication>(empty(""));
   const [filterMember, setFilterMember] = useState<string>("all");
+  const [search, setSearch] = useState("");
 
   const filtered = useMemo(
     () => medications
       .filter((m) => filterMember === "all" || m.memberId === filterMember)
+      .filter((m) => m.name.toLowerCase().includes(search.toLowerCase()) || (m.notes?.toLowerCase().includes(search.toLowerCase())))
       .sort((a, b) => Number(b.active) - Number(a.active) || b.createdAt - a.createdAt),
-    [medications, filterMember],
+    [medications, filterMember, search],
   );
 
   const onAdd = () => { setDraft(empty(members[0]?.id || "")); setOpen(true); };
@@ -86,6 +88,14 @@ export default function Medications() {
               {members.map((m) => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}
             </SelectContent>
           </Select>
+          <div className="relative w-48">
+            <Input 
+              placeholder="Search meds..." 
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="bg-background"
+            />
+          </div>
           <Button onClick={onAdd} className="gap-2"><Plus className="h-4 w-4" /> Add</Button>
         </div>
       </div>

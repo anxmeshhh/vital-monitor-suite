@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Heart, Droplets, Thermometer, Zap, AlertOctagon, PhoneCall, Siren } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import { Heart, Droplets, Thermometer, Zap, AlertOctagon, PhoneCall, Siren, ArrowLeft } from "lucide-react";
 import { useVitalsCtx } from "@/context/VitalsContext";
 import { getAlertReasons, getRiskLabel, getRiskLevel, type AlertReason, type VitalsReading } from "@/types/vitals";
 import { VitalCard } from "@/components/VitalCard";
@@ -11,6 +12,7 @@ import { cn } from "@/lib/utils";
 interface FeedAlert extends AlertReason { id: string; at: number; }
 
 const Doctor = () => {
+  const { id } = useParams();
   const { latest, history } = useVitalsCtx();
   const [feed, setFeed] = useState<FeedAlert[]>([]);
   const [notes, setNotes] = useState("");
@@ -48,8 +50,11 @@ const Doctor = () => {
     <main className="theme-clinical min-h-[calc(100vh-3.5rem)] bg-background text-foreground">
       <div className="container py-8 space-y-6">
         <header>
+          <Link to="/doctor" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary mb-4 transition-colors">
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Fleet
+          </Link>
           <p className="text-xs uppercase tracking-widest text-muted-foreground">Clinician Dashboard</p>
-          <h1 className="text-3xl font-semibold tracking-tight text-primary">VitalGlove — Doctor View</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-primary">Patient Details</h1>
         </header>
 
         {/* Patient summary */}
@@ -57,7 +62,7 @@ const Doctor = () => {
           <div>
             <p className="text-xs text-muted-foreground uppercase tracking-wider">Patient</p>
             <p className="text-2xl font-semibold">Demo Patient</p>
-            <p className="text-sm text-muted-foreground">ID #VG-0001 · Age 64 · Male</p>
+            <p className="text-sm text-muted-foreground">ID {id || "#VG-0001"} · Age 64 · Male</p>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground uppercase tracking-wider">Risk</span>

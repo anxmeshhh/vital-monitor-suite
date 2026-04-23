@@ -9,6 +9,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { NavBar } from "@/components/NavBar";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Patient from "./pages/Patient";
+import DoctorDashboard from "./pages/DoctorDashboard";
 import Doctor from "./pages/Doctor";
 import Emergency from "./pages/Emergency";
 import Login from "./pages/Login";
@@ -21,6 +22,8 @@ import Appointments from "./pages/Appointments";
 import Medications from "./pages/Medications";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound.tsx";
+import DoctorDiscovery from "./pages/DoctorDiscovery";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -49,7 +52,31 @@ function Shell() {
           path="/doctor"
           element={
             <ProtectedRoute allow={["doctor"]}>
+              <DoctorDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/doctor/patient/:id"
+          element={
+            <ProtectedRoute allow={["doctor"]}>
               <Doctor />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/discovery"
+          element={
+            <ProtectedRoute allow={["patient"]}>
+              <DoctorDiscovery />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allow={["admin"]}>
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />

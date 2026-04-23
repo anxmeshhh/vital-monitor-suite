@@ -12,7 +12,7 @@ import { toast } from "sonner";
 const roleLanding: Record<Role, string> = {
   patient: "/",
   doctor: "/doctor",
-  admin: "/doctor",
+  admin: "/admin",
 };
 
 export default function Login() {
@@ -26,7 +26,7 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false);
 
   if (user) {
-    navigate(from || roleLanding[user.role], { replace: true });
+    navigate(roleLanding[user.role], { replace: true });
   }
 
   const submit = (e: React.FormEvent) => {
@@ -40,7 +40,7 @@ export default function Login() {
     }
     toast.success("Welcome back");
     const stored = JSON.parse(localStorage.getItem("vg.session") || "{}");
-    navigate(from || roleLanding[(stored.role as Role) || "patient"], { replace: true });
+    navigate(roleLanding[(stored.role as Role) || "patient"], { replace: true });
   };
 
   const fill = (c: { email: string; password: string }) => {

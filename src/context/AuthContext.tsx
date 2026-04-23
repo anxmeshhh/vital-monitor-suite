@@ -30,14 +30,25 @@ export const DEMO_CREDENTIALS: { role: Role; email: string; password: string; na
 ];
 
 function loadUsers(): StoredUser[] {
+  let stored: StoredUser[] = [];
   try {
     const raw = localStorage.getItem(USERS_KEY);
-    if (raw) return JSON.parse(raw) as StoredUser[];
+    if (raw) stored = JSON.parse(raw) as StoredUser[];
   } catch { /* ignore */ }
-  // seed
-  const seeded: StoredUser[] = DEMO_CREDENTIALS.map((c) => ({ ...c }));
-  localStorage.setItem(USERS_KEY, JSON.stringify(seeded));
-  return seeded;
+  
+  // Always merge demo credentials so they are guaranteed to exist and work
+  const merged = [...stored];
+  for (const demo of DEMO_CREDENTIALS) {
+    const existingIndex = merged.findIndex((u) => u.email === demo.email);
+    if (existingIndex >= 0) {
+      merged[existingIndex] = { ...demo }; // overwrite to guarantee correct password/role
+    } else {
+      merged.push({ ...demo });
+    }
+  }
+  
+  localStorage.setItem(USERS_KEY, JSON.stringify(merged));
+  return merged;
 }
 
 function saveUsers(users: StoredUser[]) {

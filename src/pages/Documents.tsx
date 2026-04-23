@@ -33,6 +33,7 @@ export default function Documents() {
 
   const [filterMember, setFilterMember] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
+  const [search, setSearch] = useState("");
 
   const [pending, setPending] = useState<File | null>(null);
   const [memberId, setMemberId] = useState<string>("");
@@ -47,8 +48,9 @@ export default function Documents() {
     return documents
       .filter((d) => filterMember === "all" || d.memberId === filterMember)
       .filter((d) => filterType === "all" || d.type === filterType)
+      .filter((d) => d.title.toLowerCase().includes(search.toLowerCase()) || (d.notes?.toLowerCase().includes(search.toLowerCase())))
       .sort((a, b) => b.uploadedAt - a.uploadedAt);
-  }, [documents, filterMember, filterType]);
+  }, [documents, filterMember, filterType, search]);
 
   const onPick = () => fileRef.current?.click();
 
@@ -142,6 +144,14 @@ export default function Documents() {
               {members.map((m) => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}
             </SelectContent>
           </Select>
+        </div>
+        <div className="grid gap-1.5 flex-1 min-w-[200px]">
+          <Label className="text-xs">Search</Label>
+          <Input 
+            placeholder="Search by title or notes..." 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
         <div className="grid gap-1.5">
           <Label className="text-xs">Type</Label>

@@ -2,13 +2,15 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Users, FileText, CalendarClock, Pill, Activity, ArrowRight, HeartPulse,
+  Users, FileText, CalendarClock, Pill, Activity, ArrowRight, HeartPulse, AlertTriangle,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useFamilyHealth } from "@/hooks/useFamilyHealth";
 import { useAuth } from "@/context/AuthContext";
 import { format, isAfter } from "date-fns";
+import { useGloveCheckup } from "@/lib/gloveData";
+import { useNavigate } from "react-router-dom";
 
 interface TileProps {
   to: string;
@@ -43,6 +45,8 @@ function Tile({ to, icon: Icon, label, count, hint }: TileProps) {
 export default function FamilyHub() {
   const { user } = useAuth();
   const { members, documents, appointments, medications } = useFamilyHealth();
+  const checkup = useGloveCheckup();
+  const navigate = useNavigate();
 
   const upcoming = useMemo(
     () => appointments
@@ -75,6 +79,25 @@ export default function FamilyHub() {
           Welcome{user ? `, ${user.name}` : ""}. Everything for your family's health, in one calm space.
         </p>
       </div>
+
+      {checkup?.hasAnomaly && (
+        <Card className="p-4 mb-6 bg-critical/10 border-critical/30 border shadow-sm cursor-pointer hover:bg-critical/15 transition-colors" onClick={() => navigate("/discovery")}>
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-critical/20 p-2 rounded-full">
+                <AlertTriangle className="h-5 w-5 text-critical animate-pulse" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-critical">Smart Glove Alert</h3>
+                <p className="text-sm">Abnormal checkup detected: {checkup.details}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 text-sm font-medium text-critical">
+              Find Specialist <ArrowRight className="h-4 w-4" />
+            </div>
+          </div>
+        </Card>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Tile to="/family/members" icon={Users} label="Members" count={members.length}

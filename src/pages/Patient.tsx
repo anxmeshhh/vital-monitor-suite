@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
-import { Heart, Droplets, Thermometer, Zap, AlertTriangle, Pill, ClipboardList, PhoneCall } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Heart, Droplets, Thermometer, Zap, AlertTriangle, Pill, ClipboardList, PhoneCall, ActivitySquare } from "lucide-react";
+import { triggerGloveAnomaly } from "@/lib/gloveData";
 import { useVitalsCtx } from "@/context/VitalsContext";
 import { getAlertReasons, getRiskLabel, getRiskLevel } from "@/types/vitals";
 import { VitalCard } from "@/components/VitalCard";
@@ -32,6 +34,18 @@ const Patient = () => {
   const [symptom, setSymptom] = useState("");
   const [symptoms, setSymptoms] = useState<{ id: string; text: string; at: string }[]>([]);
   const [sosOpen, setSosOpen] = useState(false);
+  const [checkupRunning, setCheckupRunning] = useState(false);
+  const [anomalyOpen, setAnomalyOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const runGloveCheckup = () => {
+    setCheckupRunning(true);
+    setTimeout(() => {
+      setCheckupRunning(false);
+      triggerGloveAnomaly();
+      setAnomalyOpen(true);
+    }, 2000);
+  };
 
   const submitSymptom = (e: React.FormEvent) => {
     e.preventDefault();
@@ -199,8 +213,17 @@ const Patient = () => {
           </div>
         </section>
 
-        {/* SOS */}
-        <section className="flex justify-center pt-4">
+        {/* Actions */}
+        <section className="flex flex-col sm:flex-row justify-center gap-6 pt-4">
+          <button
+            onClick={runGloveCheckup}
+            disabled={checkupRunning}
+            className="relative rounded-full bg-primary text-primary-foreground px-12 py-6 text-xl font-bold tracking-wider uppercase shadow-glow-primary hover:scale-105 transition-transform disabled:opacity-70 disabled:hover:scale-100"
+          >
+            <ActivitySquare className={cn("inline h-6 w-6 mr-3 -mt-1", checkupRunning && "animate-spin")} />
+            {checkupRunning ? "Running Checkup..." : "Run Glove Checkup"}
+          </button>
+          
           <button
             onClick={() => setSosOpen(true)}
             className="relative rounded-full bg-critical text-critical-foreground px-12 py-6 text-xl font-bold tracking-wider uppercase shadow-glow-critical animate-pulse-ring hover:scale-105 transition-transform"
@@ -234,6 +257,28 @@ const Patient = () => {
               <p className="text-xs text-muted-foreground">G-Force</p>
               <p className="font-mono-tabular text-lg">{latest?.gforce.toFixed(2) ?? "—"} G</p>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={anomalyOpen} onOpenChange={setAnomalyOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-critical flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              Glove Anomaly Detected
+            </DialogTitle>
+            <DialogDescription className="text-base mt-2">
+              The Smart Glove detected an <strong>Abnormal Heart Rate (135 BPM)</strong> indicating possible Arrhythmia.
+              <br /><br />
+              Based on this reading, we highly recommend scheduling a consultation with a specialist immediately.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-3 mt-6">
+            <Button variant="outline" onClick={() => setAnomalyOpen(false)}>Dismiss</Button>
+            <Button onClick={() => navigate("/discovery")} className="bg-primary text-primary-foreground">
+              Find a Doctor
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
