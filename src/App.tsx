@@ -14,6 +14,11 @@ import Emergency from "./pages/Emergency";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Settings from "./pages/Settings";
+import FamilyHub from "./pages/FamilyHub";
+import FamilyMembers from "./pages/FamilyMembers";
+import Documents from "./pages/Documents";
+import Appointments from "./pages/Appointments";
+import Medications from "./pages/Medications";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound.tsx";
 
